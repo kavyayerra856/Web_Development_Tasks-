@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tic Tac Toe</title>
+
+    <style>
+        body {
+            background: linear-gradient(to right, #7ed6df, #4834d4);
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 40px;
+            color: white;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .board {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+        }
+
+        .cell {
+            background: white;
+            color: black;
+            font-size: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cell:hover {
+            background: #dcdde1;
+        }
+
+        #reset {
+            margin-top: 20px;
+            padding: 10px 25px;
+            font-size: 18px;
+            border: none;
+            background: red;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Tic-Tac-Toe</h1>
+
+    <div id="message" style="font-size: 24px; margin-bottom: 20px;">Player X's turn</div>
+
+    <div class="board" id="board">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+    </div>
+
+    <button id="reset">Reset</button>
+
+    <script>
+        let cells = document.querySelectorAll(".cell");
+        let message = document.getElementById("message");
+        let currentPlayer = "X";
+        let gameActive = true;
+
+        function checkWinner() {
+            let combos = [
+                [0,1,2], [3,4,5], [6,7,8], // rows
+                [0,3,6], [1,4,7], [2,5,8], // columns
+                [0,4,8], [2,4,6]           // diagonals
+            ];
+
+            for (let c of combos) {
+                let [a,b,c2] = c;
+                if (
+                    cells[a].innerText !== "" &&
+                    cells[a].innerText === cells[b].innerText &&
+                    cells[a].innerText === cells[c2].innerText
+                ) {
+                    message.innerText = currentPlayer + " Wins!";
+                    gameActive = false;
+                    return;
+                }
+            }
+
+            // Check for draw
+            let isDraw = [...cells].every(cell => cell.innerText !== "");
+            if (isDraw) {
+                message.innerText = "It's a Draw!";
+                gameActive = false;
+            }
+        }
+
+        cells.forEach(cell => {
+            cell.addEventListener("click", () => {
+                if (cell.innerText === "" && gameActive) {
+                    cell.innerText = currentPlayer;
+
+                    checkWinner();
+
+                    if (gameActive) {
+                        currentPlayer = currentPlayer === "X" ? "Y" : "X";
+                        message.innerText = "Player " + currentPlayer + "'s turn";
+                    }
+                }
+            });
+        });
+
+        document.getElementById("reset").onclick = () => {
+            cells.forEach(cell => cell.innerText = "");
+            currentPlayer = "X";
+            gameActive = true;
+            message.innerText = "Player X's turn";
+        };
+    </script>
+
+</body>
+</html>
